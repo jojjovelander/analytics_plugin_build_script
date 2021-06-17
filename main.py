@@ -120,7 +120,8 @@ def on_rm_error(func, path, exc_info):
 if __name__ == '__main__':
     clean()
     clean('./output/')
-    config = get_config_from_file(sys.argv[1] if len(sys.argv) >= 2 else None)
+    path = sys.argv[1] if len(sys.argv) >= 2 else None
+    config = get_config_from_file(path)
 
     ad_config = config['repositories']['analytics_dashboard']
     mc_config = config['repositories']['moodle_charts']
@@ -157,7 +158,7 @@ if __name__ == '__main__':
     insert_build_variables('./build/' + ad_config['name'] + '/token_factory.php', 'password', 'WORLD!')
 
     ad_config['version'] += 1
-    update_config_file(sys.argv[1], config)
+    update_config_file(path, config)
     insert_build_variables('./build/' + ad_config['name'] + '/version.php', 'version', ad_config['version'])
     print("Updating %s version" % (ad_config['version']))
 
@@ -169,14 +170,14 @@ if __name__ == '__main__':
     insert_build_variables('./build/' + ca_config['name'] + '/token_factory.php', 'password', 'WORLD!')
 
     ca_config['version'] += 1
-    update_config_file(sys.argv[1], config)
+    update_config_file(path, config)
     insert_build_variables('./build/' + ca_config['name'] + '/version.php', 'version', ca_config['version'])
     print("Updating %s version" % (ca_config['version']))
 
     print("Updating %s config" % (ws_config['name']))
     insert_build_variables('./build/' + ws_config['name'] + '/token_verifier.php', 'password', 'WORLD!')
     ws_config['version'] += 1
-    update_config_file(sys.argv[1] if len(sys.argv) >= 2 else None, config)
+    update_config_file(path, config)
     insert_build_variables('./build/' + ws_config['name'] + '/version.php', 'version', ws_config['version'])
 
     print("Updating %s version" % (ws_config['version']))
