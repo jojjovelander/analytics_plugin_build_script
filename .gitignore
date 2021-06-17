@@ -3,6 +3,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+
 .idea/
 
 # C extensions
@@ -11,6 +12,7 @@ __pycache__/
 # Distribution / packaging
 .Python
 build/
+output/
 develop-eggs/
 dist/
 downloads/
