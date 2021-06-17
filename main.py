@@ -120,7 +120,7 @@ def on_rm_error(func, path, exc_info):
 if __name__ == '__main__':
     clean()
     clean('./output/')
-    config = get_config_from_file(sys.argv[1])
+    config = get_config_from_file(sys.argv[1] if len(sys.argv) >= 2 else None)
 
     ad_config = config['repositories']['analytics_dashboard']
     mc_config = config['repositories']['moodle_charts']
@@ -176,7 +176,7 @@ if __name__ == '__main__':
     print("Updating %s config" % (ws_config['name']))
     insert_build_variables('./build/' + ws_config['name'] + '/token_verifier.php', 'password', 'WORLD!')
     ws_config['version'] += 1
-    update_config_file(sys.argv[1], config)
+    update_config_file(sys.argv[1] if len(sys.argv) >= 2 else None, config)
     insert_build_variables('./build/' + ws_config['name'] + '/version.php', 'version', ws_config['version'])
 
     print("Updating %s version" % (ws_config['version']))
