@@ -4,7 +4,6 @@ import shutil
 import stat
 import subprocess as sp
 import sys
-import time
 from os import listdir
 from os.path import isfile, join
 
@@ -38,12 +37,6 @@ def insert_build_variables(filename, key, value):
     write_to_file(filename, content)
 
 
-def increment_plugin_version(version):
-    version += 1
-    # print(version)
-    # write_to_file(filename, content)
-
-
 def build_angular_app():
     os.chdir("./build/moodle-charts")
     print("Installing Angular Dependencies")
@@ -56,7 +49,6 @@ def build_angular_app():
 
 
 def get_angular_prod_resource_names(resources):
-    # "/Users/johannavelander/Developer/moodle-charts/dist/moodle-charts"
     path = os.path.abspath('./build/moodle-charts/dist/moodle-charts/')
     files = [f for f in listdir(path) if isfile(join(path, f))]
 
@@ -76,7 +68,7 @@ def get_angular_prod_resource_names(resources):
     return resources
 
 
-def moustachioe_file(filename, resources):
+def mustachio_file(filename, resources):
     with open(filename, 'r') as f:
         content = chevron.render(f, resources)
     write_to_file(filename, content)
@@ -154,14 +146,14 @@ if __name__ == '__main__':
     print("Updating Angular prod environment config")
     angular_build_resources = {"moodle_webservice_api_key": config['angular']['web_service_token'],
                                "angular_resources_location": config['angular']['web_service_host']}
-    moustachioe_file('./build/' + mc_config['name'] + '/src/environments/environment.prod.ts', angular_build_resources)
+    mustachio_file('./build/' + mc_config['name'] + '/src/environments/environment.prod.ts', angular_build_resources)
     build_angular_app()
 
     print("Updating %s config" % (ad_config['name']))
     angular_resources = get_angular_prod_resource_names(
         {"styles": '', "polyfills": '', 'polyfills-es5': '', 'runtime': '', 'main': '',
          'angular_app_location': config['angular']['angular_host']})
-    moustachioe_file('./build/' + ad_config['name'] + '/classes/renderable.php', angular_resources)
+    mustachio_file('./build/' + ad_config['name'] + '/classes/renderable.php', angular_resources)
     insert_build_variables('./build/' + ad_config['name'] + '/token_factory.php', 'password', 'WORLD!')
 
     ad_config['version'] += 1
@@ -173,7 +165,7 @@ if __name__ == '__main__':
     angular_resources = get_angular_prod_resource_names(
         {"styles": '', "polyfills": '', 'polyfills-es5': '', 'runtime': '', 'main': '',
          'angular_app_location': config['angular']['angular_host']})
-    moustachioe_file('./build/' + ca_config['name'] + '/block_course_analytics.php', angular_resources)
+    mustachio_file('./build/' + ca_config['name'] + '/block_course_analytics.php', angular_resources)
     insert_build_variables('./build/' + ca_config['name'] + '/token_factory.php', 'password', 'WORLD!')
 
     ca_config['version'] += 1
@@ -201,4 +193,3 @@ if __name__ == '__main__':
     create_zip_archive('output/' + ws_config['name'], './build', ws_config['name'])
     create_zip_archive('output/' + ca_config['name'], './build', ca_config['name'])
     create_zip_archive('output/moodle_charts', './build/' + mc_config['name'] + '/dist/', mc_config['name'])
-    # create_zip_archive('output/moodle_charts', './build/moodle-charts/dist/', 'moodle-charts')
